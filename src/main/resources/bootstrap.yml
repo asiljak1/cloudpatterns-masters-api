@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: cloudmasters-app
+  cloud:
+    config:
+      uri: http://localhost:8888
