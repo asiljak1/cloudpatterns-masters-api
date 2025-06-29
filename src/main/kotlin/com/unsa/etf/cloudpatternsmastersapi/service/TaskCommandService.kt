@@ -4,7 +4,6 @@ import com.unsa.etf.cloudpatternsmastersapi.model.Task
 import com.unsa.etf.cloudpatternsmastersapi.model.TaskCreatedEvent
 import com.unsa.etf.cloudpatternsmastersapi.filters.TaskPipeline
 import com.unsa.etf.cloudpatternsmastersapi.repository.TaskRepository
-import com.unsa.etf.cloudpatternsmastersapi.repository.UserRepository
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cloud.context.config.annotation.RefreshScope
 import org.springframework.kafka.core.KafkaTemplate
@@ -15,7 +14,7 @@ import java.time.LocalDateTime
 @Service
 class  TaskCommandService(
     private val taskRepository: TaskRepository,
-    private val userRepository: UserRepository,
+    private val userClient: UserClient,
     private val taskPipeline: TaskPipeline,
     private val kafkaTemplate: KafkaTemplate<String, Any>
 ) {
@@ -23,7 +22,7 @@ class  TaskCommandService(
     fun createTask(task: Task, username: String): Task {
         val processedTask = taskPipeline.process(task, username)
 
-        val user = userRepository.findByUsername(username)
+        val user = userClient.getUserByUsername(username)
         processedTask.user = user
         val saved = taskRepository.save(processedTask)
 

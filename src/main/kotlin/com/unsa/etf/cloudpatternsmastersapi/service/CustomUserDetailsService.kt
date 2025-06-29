@@ -1,6 +1,5 @@
 package com.unsa.etf.cloudpatternsmastersapi.service
 
-import com.unsa.etf.cloudpatternsmastersapi.repository.UserRepository
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -8,9 +7,9 @@ import org.springframework.security.core.userdetails.User as SecurityUser
 import org.springframework.stereotype.Service
 
 @Service
-class CustomUserDetailsService(val userRepository: UserRepository) : UserDetailsService {
+class CustomUserDetailsService(val userClient: UserClient) : UserDetailsService {
     override fun loadUserByUsername(username: String): SecurityUser {
-        val user = userRepository.findByUsername(username)
+        val user = userClient.getUserByUsername(username)
             ?: throw UsernameNotFoundException("User not found")
 
         return SecurityUser(
